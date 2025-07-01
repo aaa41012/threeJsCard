@@ -1,0 +1,243 @@
+<template>
+  <!-- Container for the 3D scene -->
+  <div class="card-container" ref="container">
+    <!-- Canvas element for rendering -->
+    <canvas ref="canvas"></canvas>
+  </div>
+</template>
+
+<script setup lang="ts">
+import { onMounted, onUnmounted, ref } from 'vue';
+import * as THREE from 'three';
+import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader';
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
+import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
+
+// Reference to the container and canvas elements
+const container = ref<HTMLDivElement | null>(null);
+const canvas = ref<HTMLCanvasElement | null>(null);
+
+/**
+ * Creates the Three.js scene.
+ * @returns {THREE.Scene} The created scene.
+ */
+function createScene(): THREE.Scene {
+  const scene = new THREE.Scene();
+  return scene;
+}
+
+/**
+ * Creates the Three.js renderer.
+ * @param {HTMLCanvasElement} canvas The canvas element to render on.
+ * @returns {THREE.WebGLRenderer} The created renderer.
+ */
+function createRenderer(canvas: HTMLCanvasElement): THREE.WebGLRenderer {
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  renderer.setPixelRatio(window.devicePixelRatio);
+  renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1;
+  return renderer;
+}
+
+/**
+ * Adds lights to the scene.
+ * @param {THREE.Scene} scene The scene to add lights to.
+ */
+function addLights(scene: THREE.Scene) {
+  const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+  scene.add(ambientLight);
+
+  const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+  directionalLight.position.set(8, 15, 10);
+  directionalLight.castShadow = true;
+  directionalLight.shadow.mapSize.width = 1024;
+  directionalLight.shadow.mapSize.height = 1024;
+  directionalLight.shadow.camera.near = 0.5;
+  directionalLight.shadow.camera.far = 50;
+  scene.add(directionalLight);
+}
+
+/**
+ * Creates a ground plane for receiving shadows.
+ * @param {THREE.Scene} scene The scene to add the ground to.
+ */
+function createGround(scene: THREE.Scene) {
+  const groundGeometry = new THREE.PlaneGeometry(20, 20);
+  const groundMaterial = new THREE.ShadowMaterial({ opacity: 0.3 });
+  const groundMesh = new THREE.Mesh(groundGeometry, groundMaterial);
+  groundMesh.rotation.x = -Math.PI / 2;
+  groundMesh.position.y = -2;
+  groundMesh.receiveShadow = true;
+  scene.add(groundMesh);
+}
+
+// Run this code when the component is mounted
+onMounted(() => {
+  const containerEl = container.value;
+  const canvasEl = canvas.value;
+  if (!containerEl || !canvasEl) return;
+
+  const width = canvasEl.clientWidth;
+  const height = canvasEl.clientHeight;
+
+  const scene = createScene();
+  const camera = new THREE.PerspectiveCamera(45, width / height, 0.1, 1000);
+  camera.position.set(0, 0, 7);
+
+  const renderer = createRenderer(canvasEl);
+
+  addLights(scene);
+  createGround(scene);
+
+  new RGBELoader().setPath('/').load('studio.hdr', (texture) => {
+    texture.mapping = THREE.EquirectangularReflectionMapping;
+    scene.background = texture;
+    scene.environment = texture;
+  });
+
+  const cardGroup = new THREE.Group();
+  cardGroup.position.y = -0.5;
+  scene.add(cardGroup);
+
+  const cardWidth = 4;
+  const cardHeight = 2.2;
+  const cardGeometry = new THREE.BoxGeometry(cardWidth, cardHeight, 0.05);
+  const cardMaterial = new THREE.MeshStandardMaterial({
+    color: '#fafafa',
+    roughness: 0.5,
+    metalness: 0.5,
+  });
+  const cardMesh = new THREE.Mesh(cardGeometry, cardMaterial);
+  cardMesh.castShadow = true;
+  cardGroup.add(cardMesh);
+
+  const imageSize = 1.6;
+  const imageGeometry = new THREE.PlaneGeometry(imageSize, imageSize);
+  const textureLoader = new THREE.TextureLoader();
+  const texture = textureLoader.load('/logo.jpg');
+  const imageMaterial = new THREE.MeshStandardMaterial({ map: texture, roughness: 0.5, metalness: 0.2 });
+  const imageMesh = new THREE.Mesh(imageGeometry, imageMaterial);
+  imageMesh.position.set(cardWidth / 4, 0, 0.03);
+  cardGroup.add(imageMesh);
+
+  const fontLoader = new FontLoader();
+  fontLoader.load('/fonts/helvetiker_regular.json', (font) => {
+    const textGeometry = new TextGeometry('JIN Lin', {
+      font: font,
+      size: 0.25,
+      depth: 0.01,
+    });
+    textGeometry.center();
+    const textMaterial = new THREE.MeshStandardMaterial({ color: '#111111', roughness: 0.1, metalness: 0.4 });
+    const textMesh = new THREE.Mesh(textGeometry, textMaterial);
+    textMesh.position.set(-cardWidth / 4, 0, 0.03);
+    cardGroup.add(textMesh);
+
+    // Back of the card
+    const emailGeometry = new TextGeometry('Email: email@example.com', {
+      font: font,
+      size: 0.15,
+      depth: 0.01,
+    });
+    emailGeometry.center();
+    const emailMaterial = new THREE.MeshStandardMaterial({ color: '#111111', roughness: 0.1, metalness: 0.4 });
+    const emailMesh = new THREE.Mesh(emailGeometry, emailMaterial);
+    emailMesh.position.set(0, 0.5, -0.03);
+    emailMesh.rotation.y = Math.PI; // Rotate to face the back
+    cardGroup.add(emailMesh);
+
+    const websiteGeometry = new TextGeometry('Website: example.com', {
+      font: font,
+      size: 0.15,
+      depth: 0.01,
+    });
+    websiteGeometry.center();
+    const websiteMaterial = new THREE.MeshStandardMaterial({ color: '#111111', roughness: 0.1, metalness: 0.4 });
+    const websiteMesh = new THREE.Mesh(websiteGeometry, websiteMaterial);
+    websiteMesh.position.set(0, -0.5, -0.03);
+    websiteMesh.rotation.y = Math.PI; // Rotate to face the back
+    cardGroup.add(websiteMesh);
+  });
+
+  const mouse = new THREE.Vector2();
+  const targetRotation = new THREE.Vector2();
+  let isFlipped = false;
+  let targetFlip = 0;
+
+  const onMouseMove = (event: MouseEvent) => {
+    const rect = containerEl.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+
+    mouse.x = (x / rect.width) * 2 - 1;
+    mouse.y = -(y / rect.height) * 2 + 1;
+
+    if (!isFlipped) {
+        targetRotation.x = mouse.y * 0.25;
+        targetRotation.y = mouse.x * 0.5;
+    }
+  };
+
+  const raycaster = new THREE.Raycaster();
+  const onClick = () => {
+    raycaster.setFromCamera(mouse, camera);
+    const intersects = raycaster.intersectObjects(cardGroup.children);
+    if (intersects.length > 0) {
+        isFlipped = !isFlipped;
+        targetFlip = isFlipped ? Math.PI*2 : 0;
+    }
+  };
+
+  containerEl.addEventListener('mousemove', onMouseMove);
+  containerEl.addEventListener('click', onClick);
+
+  const animate = () => {
+    requestAnimationFrame(animate);
+
+    cardGroup.rotation.x += (targetRotation.x - cardGroup.rotation.x) * 0.1;
+    cardGroup.rotation.y += (targetRotation.y - cardGroup.rotation.y) * 0.1;
+    cardGroup.rotation.y += (targetFlip - cardGroup.rotation.y) * 0.1;
+
+    renderer.render(scene, camera);
+  };
+
+  animate();
+
+  const handleResize = () => {
+    const newWidth = canvasEl.clientWidth;
+    const newHeight = canvasEl.clientHeight;
+    camera.aspect = newWidth / newHeight;
+    camera.updateProjectionMatrix();
+    renderer.setSize(newWidth, newHeight);
+  };
+
+  const resizeObserver = new ResizeObserver(handleResize);
+  resizeObserver.observe(canvasEl);
+
+  onUnmounted(() => {
+    containerEl.removeEventListener('mousemove', onMouseMove);
+    containerEl.removeEventListener('click', onClick);
+    resizeObserver.disconnect();
+  });
+});
+</script>
+
+<style scoped>
+.card-container {
+  width: 800px;
+  height: 600px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #e0e0e0;
+  cursor: pointer;
+}
+canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+</style>
