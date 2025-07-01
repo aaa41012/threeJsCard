@@ -9,9 +9,11 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue';
 import * as THREE from 'three';
-import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader';
-import { FontLoader } from 'three/examples/jsm/loaders/FontLoader';
-import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
+// Vite + TS + ESM 組合時，three/examples/... 必須加 .js 副檔名，否則會在 build 時找不到模組。
+// dev 可以跑，是因為開發環境使用的是 Node ESM 模式與 Vite 的模組解析器，但 build 是 rollup，要求路徑更嚴謹。
+import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
+import { FontLoader } from 'three/examples/jsm/loaders/FontLoader.js';
+import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry.js';
 
 // Reference to the container and canvas elements
 const container = ref<HTMLDivElement | null>(null);
