@@ -234,7 +234,7 @@ onMounted(() => {
   display: flex;
   justify-content: center;
   align-items: center;
-  background-color: #e0e0e0;
+  /* background-color: #e0e0e0; */
   cursor: pointer;
 }
 canvas {
