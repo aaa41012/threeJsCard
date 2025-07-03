@@ -4,10 +4,12 @@
 @import "tailwindcss";
 
 @theme {
-  --breakpoint-xs: 30rem;
-  --breakpoint-sm: 40rem;
-  --breakpoint-md: 48rem;
-  --breakpoint-lg: 64rem;
-  --breakpoint-xl: 80rem;
-  --breakpoint-2xl: 96rem;
+  --color-custom: #fa0;
+  /* --color-mint-custom: oklch(0.72 0.11 178); */
 }
+/* --breakpoint-xs: 30rem;
+--breakpoint-sm: 40rem;
+--breakpoint-md: 48rem;
+--breakpoint-lg: 64rem;
+--breakpoint-xl: 80rem;
+--breakpoint-2xl: 96rem; */
