@@ -202,7 +202,7 @@ const onClick = () => {
   const intersects = raycaster.intersectObjects(cardGroup.children);
   if (intersects.length > 0) {
     isFlipped = !isFlipped;
-    targetFlip = isFlipped ? Math.PI * 2 : 0;
+    targetFlip = isFlipped ? Math.PI : 0;
     autoRotate = false;
     lastMouseMoveTime = Date.now();
   }
@@ -261,6 +261,3 @@ const animate = () => {
   });
 });
 </script>
-
-<style scoped>
-</style>
