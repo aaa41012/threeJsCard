@@ -4,35 +4,30 @@
     onMounted,
     onUnmounted
   } from 'vue';
-  // import Card from './../components/RotatingCard.vue';
+  import Card from './../components/RotatingCard.vue';
 
   const logoRotation = ref(0);
-  // const ticking = ref(false);
   const handleScroll = () => {
     logoRotation.value = window.scrollY * 0.5;
   };
-  const updateScroll = () => {
-    document.querySelectorAll('.section.-horizon').forEach((sectionEl) => {
-      const section = sectionEl as HTMLElement;
-      const horizon = section.querySelector('.section__horizon') as HTMLElement | null;
-
-      if (!horizon) return;
-
-      const scrollTop = window.scrollY;
-      const offsetTop = section.offsetTop;
-      const sectionHeight = section.offsetHeight;
-
-      const progress = (scrollTop - offsetTop) / sectionHeight;
-
-      if (progress >= 0 && progress <= 1) {
-        const maxTranslateX = horizon.scrollWidth - window.innerWidth;
-        const translateX = -progress * maxTranslateX;
-        horizon.style.transform = `translateX(${translateX}px)`;
-      }
-    });
+  const getProgress = (element: HTMLElement) => {
+    var rect = element.getBoundingClientRect();
+    let progress = -(rect.top / (element.clientHeight - window.innerHeight))
+    if (progress <= 0) {
+      progress = 0
+    } else if (progress >= 1) {
+      progress = 1
+    }
+    return progress
   };
-
-
+  const updateScroll = () => {
+    document.querySelectorAll('.section.-horizon').forEach((horizon) => {
+      const horizonEle = horizon as HTMLElement;
+      window.addEventListener('scroll', () => {
+        horizonEle.children[0].scrollLeft = getProgress(horizonEle) * window.innerWidth * 4;
+      })
+    })
+  }
 
 
   // Setup Intersection Observer when the component is mounted
@@ -120,27 +115,25 @@
       </div>
     </section>
     <!-- horizontal -->
-    <section>
-      <section class="section -b -horizon relative h-[600vh]">
-        <div
-          class="section__horizon sticky will-change-transform top-0 flex h-[100vh] w-[500vw] overflow-x-auto overflow-y-hidden">
-          <div class="section__horizon-block min-w-[100vw] h-full font-bold"><span>HORIZONTAL 👉</span></div>
-          <div class="section__horizon-block min-w-[100vw] h-full font-bold left-[10vw]"><span>HORIZONTAL
-              🥰</span></div>
-          <div class="section__horizon-block min-w-[100vw] h-full font-bold left-[20vw]"><span>HORIZONTAL
-              😘</span></div>
-          <div class="section__horizon-block min-w-[100vw] h-full font-bold left-[30vw]"><span>HORIZONTAL
-              🎉</span></div>
-          <div class="section__horizon-block min-w-[100vw] h-full font-bold">
-            <div>🏄 OH YA BABY 🏄</div>
-          </div>
-        </div>
-      </section>
+    <section class="section -a">
+      <div class="section__text">👇 SCROLL DOWN 👇</div>
     </section>
-    <section class="section -c h-[100vh]">
+    <section class="section -b -horizon">
+      <div class="section__horizon">
+        <div class="section__horizon-block"><span>HORIZONTAL 👉</span></div>
+        <div class="section__horizon-block"><span>HORIZONTAL 🥰</span></div>
+        <div class="section__horizon-block"><span>HORIZONTAL 😘</span></div>
+        <div class="section__horizon-block"><span>HORIZONTAL 🎉</span></div>
+        <div class="section__horizon-block">
+          <div>🏄 OH YA BABY 🏄</div>
+        </div>
+      </div>
+    </section>
+    <section class="section -c">
       <div class="section__text">
-        Jin Design Loves Egg<br>
+        Contact me<br>
         <a href="https://e-s.tw">Made by Jin Design</a>
+        <Card></Card>
       </div>
     </section>
   </main>
@@ -258,6 +251,50 @@
     /* Medium float */
   }
 
+  /* scroll */
+  .section {
+    width: 100vw;
+  }
+
+  .section.-a {
+    font-size: 6vw;
+    height: 100vh;
+    background-color: #CCFF66;
+  }
+
+  .section.-b {
+    color: #001514;
+    height: 500vh;
+    position: relative;
+    background-color: #4E6E58;
+  }
+
+  .section.-c {
+    font-size: 2vw;
+    font-weight: 100;
+    height: 100vh;
+    color: #fff;
+    background-color: #001514;
+  }
+
+  .section.-c a {
+    font-size: 16px;
+    opacity: 0.3;
+    color: #fff;
+    display: block;
+  }
+
+  .section__horizon {
+    top: 0;
+    position: sticky;
+    width: 100%;
+    height: 100vh;
+    white-space: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    display: flex;
+  }
+
   .section__horizon::-webkit-scrollbar {
     height: 10px;
   }
@@ -271,18 +308,54 @@
   }
 
   .section__horizon-block {
-    position: relative;
+    width: 100vw;
+    flex: 0 0 auto;
+    left: 0;
+    position: sticky;
+  }
+
+  .section__horizon-block>div {
+    width: 100%;
+    height: 100%;
+    font-size: 6vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .section__horizon-block>span {
+    font-size: 4vw;
+    -ms-writing-mode: tb-lr;
+    writing-mode: vertical-lr;
+    padding: 1vw;
   }
 
   .section__horizon-block:nth-child(2) {
+    left: 10vw;
     background-color: #BCAA99;
   }
 
   .section__horizon-block:nth-child(3) {
+    left: 20vw;
     background-color: #645986;
   }
 
   .section__horizon-block:nth-child(4) {
+    left: 30vw;
     background-color: #BCAA99;
+  }
+
+  .section__horizon-block:nth-child(5) {
+    background-color: #CCFF66;
+  }
+
+  .section__text {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 0.5rem;
   }
 </style>
