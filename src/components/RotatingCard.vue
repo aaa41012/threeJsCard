@@ -1,8 +1,8 @@
 <template>
   <!-- Container for the 3D scene -->
-  <div class="flex justify-center items-center w-1/2" ref="container">
+  <div class="flex justify-center items-center relative w-3xl" ref="container">
     <!-- Canvas element for rendering -->
-    <canvas ref="canvas" class="cursor-pointer block w-full h-full"></canvas>
+    <canvas ref="canvas" class="cursor-pointer block relative"></canvas>
   </div>
 </template>
 
