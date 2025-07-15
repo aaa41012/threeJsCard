@@ -5,6 +5,7 @@
     onUnmounted
   } from 'vue';
   import Card from './../components/RotatingCard.vue';
+  import FlipCards from '../components/FlipCards.vue';
 
   const logoRotation = ref(0);
   const handleScroll = () => {
@@ -66,6 +67,7 @@
       <div class="parallax-shape shape-2 w-[100px] h-[100px] top-[60%] right-[20%]"></div>
       <div class="parallax-shape shape-3 w-[50px] h-[50px] top-[30%] right-[10%]"></div>
       <div class="parallax-shape shape-4 w-[500px] h-[500px] top-[80%] right-[80%]"></div>
+      <div class="flex text-4xl text-white relative top-[-5%] drop-shadow-lg text-center">Creative Frontend Developer</div>
       <div class="logo-container">
         <div class="flex items-center justify-center relative">
           <p class="absolute text-white">Jin</p>
@@ -81,58 +83,28 @@
           </svg>
         </div>
       </div>
-      <h1 class="text-5xl font-bold text-white drop-shadow-lg">Scroll Down</h1>
+      <h1 class="text-3xl font-bold text-white drop-shadow-lg shape-4">👇</h1>
     </section>
-
-    <!-- Content Section with reveal cards -->
-    <section class="content-section px-4 py-12 bg-gray-50 ">
-      <h2 class="text-4xl font-bold text-center mb-12">Discover My Features</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-        <div
-          class="reveal-card bg-white p-6 rounded-xl shadow-md transform transition duration-300 hover:-translate-y-2 hover:shadow-xl">
-          <h3 class="font-bold text-xl mb-2">Dynamic Animations</h3>
-          <p class="text-gray-600">Engaging animations that trigger on scroll, creating a modern and interactive user
-            experience that captures attention.</p>
-        </div>
-        <div
-          class="reveal-card bg-white p-6 rounded-xl shadow-md transform transition duration-300 hover:-translate-y-2 hover:shadow-xl">
-          <h3 class="font-bold text-xl mb-2">Parallax Effects</h3>
-          <p class="text-gray-600">Deepen the visual hierarchy with parallax scrolling, giving your website a sense of
-            three-dimensional depth.</p>
-        </div>
-        <div
-          class="reveal-card bg-white p-6 rounded-xl shadow-md transform transition duration-300 hover:-translate-y-2 hover:shadow-xl">
-          <h3 class="font-bold text-xl mb-2">Responsive Design</h3>
-          <p class="text-gray-600">Our layouts are fully responsive, ensuring a seamless and beautiful experience on
-            desktops, tablets, and mobile devices.</p>
-        </div>
-        <div
-          class="reveal-card bg-white p-6 rounded-xl shadow-md transform transition duration-300 hover:-translate-y-2 hover:shadow-xl">
-          <h3 class="font-bold text-xl mb-2">Optimized Performance</h3>
-          <p class="text-gray-600">We use modern techniques like Intersection Observer to ensure animations are smooth
-            and performance is top-notch.</p>
-        </div>
-      </div>
-    </section>
+     <FlipCards></FlipCards>
     <!-- horizontal -->
     <section class="section -a">
-      <div class="section__text">👇 SCROLL DOWN 👇</div>
+      <div class="section__text drop-shadow-lg">Portfolio</div>
     </section>
     <section class="section -b -horizon">
       <div class="section__horizon">
-        <div class="section__horizon-block"><span>HORIZONTAL 👉</span></div>
-        <div class="section__horizon-block"><span>HORIZONTAL 🥰</span></div>
-        <div class="section__horizon-block"><span>HORIZONTAL 😘</span></div>
-        <div class="section__horizon-block"><span>HORIZONTAL 🎉</span></div>
+        <div class="section__horizon-block"><span>Vue3 👉</span></div>
+        <div class="section__horizon-block"><span>React 👉</span></div>
+        <div class="section__horizon-block"><span>D3.js 👉</span></div>
+        <div class="section__horizon-block"><span>HORIZONTAL 👇</span></div>
         <div class="section__horizon-block">
           <div>🏄 OH YA BABY 🏄</div>
         </div>
       </div>
     </section>
     <section class="section -c">
-      <div class="section__text">
+      <div class="section__text text-3xl font-bold">
         Contact me<br>
-        <a href="https://e-s.tw">Made by Jin Design</a>
+        <a href="mailto:aaa41012@gmail.com">Made by Jin Design</a>
         <Card></Card>
       </div>
     </section>
@@ -312,6 +284,8 @@
     flex: 0 0 auto;
     left: 0;
     position: sticky;
+    display: flex;
+    align-items: center;
   }
 
   .section__horizon-block>div {
@@ -325,8 +299,6 @@
 
   .section__horizon-block>span {
     font-size: 4vw;
-    -ms-writing-mode: tb-lr;
-    writing-mode: vertical-lr;
     padding: 1vw;
   }
 
@@ -336,12 +308,12 @@
   }
 
   .section__horizon-block:nth-child(3) {
-    left: 20vw;
+    left: 21vw;
     background-color: #645986;
   }
 
   .section__horizon-block:nth-child(4) {
-    left: 30vw;
+    left: 31vw;
     background-color: #BCAA99;
   }
 
