@@ -7,15 +7,38 @@
   // import Card from './../components/RotatingCard.vue';
 
   const logoRotation = ref(0);
-
+  // const ticking = ref(false);
   const handleScroll = () => {
     logoRotation.value = window.scrollY * 0.5;
   };
+  const updateScroll = () => {
+    document.querySelectorAll('.section.-horizon').forEach((sectionEl) => {
+      const section = sectionEl as HTMLElement;
+      const horizon = section.querySelector('.section__horizon') as HTMLElement | null;
+
+      if (!horizon) return;
+
+      const scrollTop = window.scrollY;
+      const offsetTop = section.offsetTop;
+      const sectionHeight = section.offsetHeight;
+
+      const progress = (scrollTop - offsetTop) / sectionHeight;
+
+      if (progress >= 0 && progress <= 1) {
+        const maxTranslateX = horizon.scrollWidth - window.innerWidth;
+        const translateX = -progress * maxTranslateX;
+        horizon.style.transform = `translateX(${translateX}px)`;
+      }
+    });
+  };
+
+
+
 
   // Setup Intersection Observer when the component is mounted
   onMounted(() => {
+    window.addEventListener('scroll', updateScroll);
     window.addEventListener('scroll', handleScroll);
-
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
         if (entry.isIntersecting) {
@@ -36,16 +59,18 @@
 
   onUnmounted(() => {
     window.removeEventListener('scroll', handleScroll);
+    window.removeEventListener('scroll', updateScroll);
   });
 </script>
 
 <template>
   <main>
     <!-- Parallax Section with Curved Bottom -->
-    <section class="parallax-section">
-      <div class="parallax-shape shape-1"></div>
-      <div class="parallax-shape shape-2"></div>
-      <div class="parallax-shape shape-3"></div>
+    <section class="parallax-section h-[110vh]">
+      <div class="parallax-shape shape-1 w-[250px] h-[250px] top-[10%] left-[15%]"></div>
+      <div class="parallax-shape shape-2 w-[100px] h-[100px] top-[60%] right-[20%]"></div>
+      <div class="parallax-shape shape-3 w-[50px] h-[50px] top-[30%] right-[10%]"></div>
+      <div class="parallax-shape shape-4 w-[500px] h-[500px] top-[80%] right-[80%]"></div>
       <div class="logo-container">
         <div class="flex items-center justify-center relative">
           <p class="absolute text-white">Jin</p>
@@ -66,7 +91,7 @@
 
     <!-- Content Section with reveal cards -->
     <section class="content-section px-4 py-12 bg-gray-50 ">
-      <h2 class="text-4xl font-bold text-center mb-12">Discover Our Features</h2>
+      <h2 class="text-4xl font-bold text-center mb-12">Discover My Features</h2>
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         <div
           class="reveal-card bg-white p-6 rounded-xl shadow-md transform transition duration-300 hover:-translate-y-2 hover:shadow-xl">
@@ -94,12 +119,35 @@
         </div>
       </div>
     </section>
+    <!-- horizontal -->
+    <section>
+      <section class="section -b -horizon relative h-[600vh]">
+        <div
+          class="section__horizon sticky will-change-transform top-0 flex h-[100vh] w-[500vw] overflow-x-auto overflow-y-hidden">
+          <div class="section__horizon-block min-w-[100vw] h-full font-bold"><span>HORIZONTAL 👉</span></div>
+          <div class="section__horizon-block min-w-[100vw] h-full font-bold left-[10vw]"><span>HORIZONTAL
+              🥰</span></div>
+          <div class="section__horizon-block min-w-[100vw] h-full font-bold left-[20vw]"><span>HORIZONTAL
+              😘</span></div>
+          <div class="section__horizon-block min-w-[100vw] h-full font-bold left-[30vw]"><span>HORIZONTAL
+              🎉</span></div>
+          <div class="section__horizon-block min-w-[100vw] h-full font-bold">
+            <div>🏄 OH YA BABY 🏄</div>
+          </div>
+        </div>
+      </section>
+    </section>
+    <section class="section -c h-[100vh]">
+      <div class="section__text">
+        Jin Design Loves Egg<br>
+        <a href="https://e-s.tw">Made by Jin Design</a>
+      </div>
+    </section>
   </main>
 </template>
 
 <style scoped>
   .parallax-section {
-    height: 110vh;
     /* Slightly more than 100vh to ensure curve is visible on scroll */
     /* 原本的紫色漸層 */
     background: linear-gradient(to right, #4f46e5, #a855f7);
@@ -110,7 +158,7 @@
     flex-direction: column;
     color: white;
     @apply flex relative items-center justify-center;
-    overflow: hidden; /* Ensures the pseudo-element doesn't extend beyond the section */
+    /* overflow: hidden; */
   }
 
   .logo-container {
@@ -150,24 +198,27 @@
     0% {
       transform: translateY(0);
     }
+
     50% {
       transform: translateY(-20px);
     }
+
     100% {
       transform: translateY(0);
     }
   }
 
   @keyframes wave {
-  0% {
-    transform: translateX(0);
-  }
-  100% {
-    transform: translateX(-15%);
-  }
-}
+    0% {
+      transform: translateX(0);
+    }
 
-.parallax-shape {
+    100% {
+      transform: translateX(-15%);
+    }
+  }
+
+  .parallax-shape {
     position: absolute;
     border-radius: 50%;
     background-color: rgba(255, 255, 255, 0.1);
@@ -179,30 +230,59 @@
     animation-timing-function: ease-in-out;
   }
 
-.animate-wave {
-  animation: wave 10s linear infinite;
-}
+  .animate-wave {
+    animation: wave 10s linear infinite;
+  }
+
   .shape-1 {
-    width: 250px;
-    height: 250px;
-    top: 10%;
-    left: 15%;
-    animation-duration: 8s; /* Slower float */
+    animation-duration: 8s;
+    /* Slower float */
   }
+
   .shape-2 {
-    width: 100px;
-    height: 100px;
-    top: 60%;
-    right: 20%;
-    animation-duration: 5s; /* Faster float */
-    animation-delay: 1s; /* Start after 1 second */
+    animation-duration: 5s;
+    /* Faster float */
+    animation-delay: 1s;
+    /* Start after 1 second */
   }
+
   .shape-3 {
-    width: 50px;
-    height: 50px;
-    top: 30%;
-    right: 10%;
-    animation-duration: 7s; /* Medium float */
-    animation-delay: 1.5s; /* Start after 0.5 seconds */
+    animation-duration: 7s;
+    /* Medium float */
+    animation-delay: 1.5s;
+    /* Start after 0.5 seconds */
+  }
+
+  .shape-4 {
+    animation-duration: 3s;
+    /* Medium float */
+  }
+
+  .section__horizon::-webkit-scrollbar {
+    height: 10px;
+  }
+
+  .section__horizon::-webkit-scrollbar-track {
+    background: #CCFF66;
+  }
+
+  .section__horizon::-webkit-scrollbar-thumb {
+    background: #000;
+  }
+
+  .section__horizon-block {
+    position: relative;
+  }
+
+  .section__horizon-block:nth-child(2) {
+    background-color: #BCAA99;
+  }
+
+  .section__horizon-block:nth-child(3) {
+    background-color: #645986;
+  }
+
+  .section__horizon-block:nth-child(4) {
+    background-color: #BCAA99;
   }
 </style>
