@@ -6,6 +6,7 @@
   } from 'vue';
   import Card from './../components/RotatingCard.vue';
   import FlipCards from '../components/FlipCards.vue';
+  import HorizonBlock from '../components/HorizonBlock.vue';
 
   const logoRotation = ref(0);
   const handleScroll = () => {
@@ -67,7 +68,8 @@
       <div class="parallax-shape shape-2 w-[100px] h-[100px] top-[60%] right-[20%]"></div>
       <div class="parallax-shape shape-3 w-[50px] h-[50px] top-[30%] right-[10%]"></div>
       <div class="parallax-shape shape-4 w-[500px] h-[500px] top-[80%] right-[80%]"></div>
-      <div class="flex text-4xl text-white relative top-[-5%] drop-shadow-lg text-center">Creative Frontend Developer</div>
+      <div class="flex text-4xl text-white relative top-[-5%] drop-shadow-lg text-center">Creative Frontend Developer
+      </div>
       <div class="logo-container">
         <div class="flex items-center justify-center relative">
           <p class="absolute text-white">Jin</p>
@@ -85,17 +87,47 @@
       </div>
       <h1 class="text-3xl font-bold text-white drop-shadow-lg shape-4">👇</h1>
     </section>
-     <FlipCards></FlipCards>
+    <FlipCards></FlipCards>
     <!-- horizontal -->
     <section class="section -a">
       <div class="section__text drop-shadow-lg">Portfolio</div>
     </section>
     <section class="section -b -horizon">
       <div class="section__horizon">
-        <div class="section__horizon-block"><span>Vue3 👉</span></div>
-        <div class="section__horizon-block"><span>React 👉</span></div>
-        <div class="section__horizon-block"><span>D3.js 👉</span></div>
-        <div class="section__horizon-block"><span>HORIZONTAL 👇</span></div>
+        <HorizonBlock>
+          <template #nav>Vue3</template>
+          <template #photo>
+            <img src="/logo.jpg" alt="photo" />
+          </template>
+          <template #title>Vue3</template>
+          <template #description>Vue3 project with Vite, TypeScript, and Tailwind CSS.</template>
+        </HorizonBlock>
+        <HorizonBlock>
+          <template #nav>React</template>
+          <template #photo>
+            <img src="/logo.jpg" alt="photo" />
+          </template>
+          <template #title>React</template>
+          <template #description>React project with Vite, TypeScript, and Tailwind CSS.</template>
+        </HorizonBlock>
+        <HorizonBlock>
+          <template #nav>D3.js</template>
+          <template #photo>
+            <img src="/logo.jpg" alt="photo" />
+          </template>
+          <template #title>D3.js</template>
+          <template #description>D3.js project with Vite, TypeScript, and Tailwind CSS.</template>
+        </HorizonBlock>
+        <HorizonBlock imageClass="w-lg mt-[9rem]">
+          <template #nav>Outsourcing</template>
+          <template #photo>
+            <a href="http://www.premiocable.com.tw/" target="_blank">
+              <img src="./../assets/premiocable.webp" alt="photo" />
+            </a>
+          </template>
+          <template #title>Premiocable</template>
+          <template #description>Outsourcing project with Vite, Vue3</template>
+        </HorizonBlock>
         <div class="section__horizon-block">
           <div>🏄 OH YA BABY 🏄</div>
         </div>
@@ -103,7 +135,9 @@
     </section>
     <section class="section -c">
       <div class="section__text text-3xl font-bold">
-        Contact me<br>
+        <p>
+          Contact me
+        </p>
         <a href="mailto:aaa41012@gmail.com">Made by Jin Design</a>
         <Card></Card>
       </div>
@@ -308,12 +342,12 @@
   }
 
   .section__horizon-block:nth-child(3) {
-    left: 21vw;
+    left: 20vw;
     background-color: #645986;
   }
 
   .section__horizon-block:nth-child(4) {
-    left: 31vw;
+    left: 30vw;
     background-color: #BCAA99;
   }
 
@@ -324,10 +358,7 @@
   .section__text {
     width: 100%;
     height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-direction: column;
-    gap: 0.5rem;
+    text-align: center;
+    padding: 8rem;
   }
 </style>
